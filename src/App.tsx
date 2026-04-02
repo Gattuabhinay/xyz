@@ -20,7 +20,8 @@ import {
   ChevronRight,
   Menu,
   X,
-  ExternalLink
+  ExternalLink,
+  FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { createClient } from '@supabase/supabase-js';
@@ -517,6 +518,60 @@ Thank you! 🙏
 
               <div className="mt-6 border-l-2 border-[#3B82F6] bg-[#3B82F6]/5 p-3 text-left max-w-sm mx-auto">
                 <p className="text-[#3B82F6] text-[10px] font-medium">📋 Alternative Payment Option</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Previous Year Questions Section --- */}
+      <section id="pyq" className="py-24 bg-[#F5F5F5]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-mono font-black text-[32px] tracking-[2px] uppercase text-[#F97316] mb-12 text-center">
+            PREVIOUS YEAR QUESTIONS
+          </h2>
+          
+          <div className="bg-[#0D1B2A] rounded-[14px] p-6 border border-[#21262d] shadow-2xl">
+            {/* Info Banner */}
+            <div className="bg-[#F97316]/[0.05] border-l-[3px] border-[#F97316] p-[10px] px-[14px] mb-8 text-left">
+              <p className="text-[#F97316] text-[11px] font-medium">
+                📚 Practice with last year's questions to prepare better for CODEMANIA 2027!
+              </p>
+            </div>
+
+            {/* PDF Card */}
+            <div className="bg-[#0D1117] border border-[#F97316]/20 rounded-[10px] p-5 max-w-[400px] mx-auto text-center">
+              <div className="flex justify-center">
+                <FileText className="w-[40px] h-[40px] text-[#F97316]" />
+              </div>
+              
+              <h3 className="text-white font-bold text-[14px] mt-[10px]">
+                CODEMANIA — Previous Year Questions
+              </h3>
+              <p className="text-[#6e7681] text-[11px] mb-4">
+                C Language | Quiz + Debugging + Coding
+              </p>
+
+              <div className="flex justify-center gap-3">
+                <button 
+                  onClick={() => window.open('https://drive.google.com/file/d/1bsk7CA8zsaJU_w6RQF--zQbBJUXvJJvS/view?usp=sharing', '_blank')}
+                  className="flex-1 bg-transparent border border-[#F97316]/50 text-[#F97316] py-[10px] px-5 rounded-[6px] text-[12px] font-bold hover:bg-[#F97316]/10 transition-colors"
+                >
+                  👁 View PDF
+                </button>
+                <button 
+                  onClick={() => window.open('https://drive.google.com/uc?export=download&id=1bsk7CA8zsaJU_w6RQF--zQbBJUXvJJvS', '_blank')}
+                  className="flex-1 bg-[#F97316] text-white py-[10px] px-5 rounded-[6px] text-[12px] font-bold hover:bg-[#EA580C] transition-colors"
+                >
+                  ⬇ Download PDF
+                </button>
+              </div>
+
+              {/* Note Bar */}
+              <div className="mt-4 border-l-2 border-[#F97316]/40 bg-[#F97316]/[0.03] p-2 px-3 text-left">
+                <p className="text-[#F97316]/60 text-[10px]">
+                  💡 Tip: These questions are for practice only. Actual exam questions will be different.
+                </p>
               </div>
             </div>
           </div>
