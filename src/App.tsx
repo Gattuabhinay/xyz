@@ -826,7 +826,7 @@ Thank you! 🙏
           {/* Bottom Bar */}
           <div className="border-top border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center">
             <p className="text-white/20 text-[10px]">
-              Developed and maintained by <span className="text-white/40">Computer Science Department</span>
+              Developed by the department of <span className="text-white/40">CSM(AI & ML)</span>
             </p>
             <p className="text-white/20 text-[10px]">
               © 2027 NNRG Fest. All rights reserved.
