@@ -127,21 +127,26 @@ export default function App() {
       
       // --- Save Data to Supabase ---
       try {
-        const { error } = await supabase.from('registration').insert([{ 
-          college: collegeName, 
-          name: formData.fullName, 
-          roll_number: formData.rollNumber, 
-          department: formData.department, 
-          year: formData.year, 
-          mobile: formData.mobileNumber, 
-          email: formData.email, 
-          transaction_id: formData.transactionId 
-        }]);
+        const { data, error } = await supabase
+          .from('registration')
+          .insert([{ 
+            college: collegeName, 
+            name: formData.fullName, 
+            roll_number: formData.rollNumber, 
+            department: formData.department, 
+            year: formData.year, 
+            mobile: formData.mobileNumber, 
+            email: formData.email, 
+            transaction_id: formData.transactionId 
+          }]);
         
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+        } else {
+          console.log('Saved successfully:', data);
+        }
       } catch (err) {
-        console.error("Error saving registration to Supabase:", err);
-        // We still proceed to WhatsApp even if Supabase fails, to ensure user can register
+        console.error('Error:', err);
       }
 
       const message = `Hello! I have registered for CODEMANIA event at NNRG Tech Fest 2027.
