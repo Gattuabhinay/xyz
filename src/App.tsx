@@ -68,6 +68,7 @@ export default function App() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [regCount, setRegCount] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   // --- Fetch Registration Count ---
@@ -123,6 +124,7 @@ export default function App() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
       const collegeName = formData.college === "Other" ? formData.otherCollege : formData.college;
       
       // --- Save Data to Supabase ---
@@ -171,6 +173,7 @@ Thank you! 🙏
 
       const whatsappUrl = `https://wa.me/918309030400?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
+      setIsSubmitting(false);
     } else {
       // Scroll to first error
       const firstErrorKey = Object.keys(errors)[0];
@@ -273,8 +276,14 @@ Thank you! 🙏
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-500 text-xs font-bold tracking-widest uppercase mb-6">
               <Code2 className="w-3 h-3" /> Tech Fest 2027
             </div>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white mb-6">
-              CODE<span className="text-teal-500">MANIA</span>
+            <h1 
+              className="text-6xl md:text-9xl font-black tracking-tighter mb-6 bg-clip-text text-transparent bg-cover bg-center py-2"
+              style={{ 
+                backgroundImage: 'url("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070")',
+                textShadow: '0 0 30px rgba(20,184,166,0.3)'
+              }}
+            >
+              CODEMANIA
             </h1>
             <p className="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl mb-10 leading-relaxed">
               Master the art of C programming. A high-stakes technical challenge organized by the 
@@ -653,9 +662,24 @@ Thank you! 🙏
 
               <button 
                 type="submit" 
-                className="w-full bg-teal-600 hover:bg-teal-500 text-white py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-teal-500/10 group"
+                disabled={isSubmitting}
+                className={`w-full ${isSubmitting ? 'bg-teal-800 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-500'} text-white py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-teal-500/10 group`}
               >
-                SUBMIT VIA WHATSAPP <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                {isSubmitting ? (
+                  <>
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    >
+                      <Clock className="w-5 h-5" />
+                    </motion.div>
+                    PROCESSING...
+                  </>
+                ) : (
+                  <>
+                    SUBMIT VIA WHATSAPP <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </>
+                )}
               </button>
             </form>
           </div>
@@ -672,6 +696,22 @@ Thank you! 🙏
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* AI & ML Tech Fest Image Banner */}
+          <div className="mb-16 rounded-3xl overflow-hidden border border-white/10 relative group">
+            <img 
+              src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2000" 
+              alt="AI AND ML TECH FEST 2027" 
+              className="w-full h-48 md:h-64 object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col items-center justify-center">
+              <h3 className="text-teal-500 font-mono font-black text-2xl md:text-4xl tracking-[4px] uppercase text-center px-4">
+                AI & ML TECH FEST 2027
+              </h3>
+              <div className="w-24 h-1 bg-teal-500 mt-4"></div>
+            </div>
+          </div>
+
           <div className="text-center mb-16">
             <h2 className="text-[28px] font-bold text-white mb-2">NEED HELP?</h2>
             <div className="w-12 h-1 bg-teal-500 mx-auto"></div>
@@ -745,6 +785,52 @@ Thank you! 🙏
           </div>
         </div>
       </footer>
+
+      {/* --- Loading Overlay --- */}
+      <AnimatePresence>
+        {isSubmitting && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <div className="bg-slate-900 border border-teal-500/30 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl shadow-teal-500/20">
+              <motion.div 
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 10, -10, 0]
+                }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="w-20 h-20 bg-teal-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-teal-500/20"
+              >
+                <Terminal className="w-10 h-10 text-teal-500" />
+              </motion.div>
+              <h3 className="text-white font-black text-xl mb-2 tracking-tight uppercase">Securing Your Spot</h3>
+              <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                Please wait while we encrypt your data and prepare your registration link...
+              </p>
+              <div className="flex items-center justify-center gap-2">
+                <motion.div 
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 1, delay: 0 }}
+                  className="w-2 h-2 bg-teal-500 rounded-full"
+                />
+                <motion.div 
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 1, delay: 0.2 }}
+                  className="w-2 h-2 bg-teal-500 rounded-full"
+                />
+                <motion.div 
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 1, delay: 0.4 }}
+                  className="w-2 h-2 bg-teal-500 rounded-full"
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
