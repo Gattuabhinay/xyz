@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Terminal, 
   Code2, 
@@ -23,6 +23,13 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { createClient } from '@supabase/supabase-js';
+
+// --- Supabase Client ---
+const supabase = createClient(
+  'https://ximypoaoorqtjreefqkq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpbXlwb2Fvb3JxdGpyZWVmcWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNTU5MjAsImV4cCI6MjA5MDYzMTkyMH0.tbLv_Wpkhk4opKV6M8DHnfx0kXl4a43toCBWaMTeo3o'
+);
 
 // --- Constants ---
 const ACCENT_COLOR = '#14b8a6'; // Teal
@@ -60,7 +67,29 @@ export default function App() {
     transactionId: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const [regCount, setRegCount] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+
+  // --- Fetch Registration Count ---
+  const fetchCount = async () => {
+    try {
+      const { count, error } = await supabase
+        .from('registration')
+        .select('*', { count: 'exact', head: true });
+      
+      if (!error && count !== null) {
+        setRegCount(count);
+      }
+    } catch (err) {
+      console.error("Error fetching registration count:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCount();
+    const interval = setInterval(fetchCount, 30000); // Refresh every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   const colleges = [
     "NNRG (Nalla Narasimha Reddy Group of Institutions)",
@@ -91,10 +120,30 @@ export default function App() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
       const collegeName = formData.college === "Other" ? formData.otherCollege : formData.college;
+      
+      // --- Save Data to Supabase ---
+      try {
+        const { error } = await supabase.from('registration').insert([{ 
+          college: collegeName, 
+          name: formData.fullName, 
+          roll_number: formData.rollNumber, 
+          department: formData.department, 
+          year: formData.year, 
+          mobile: formData.mobileNumber, 
+          email: formData.email, 
+          transaction_id: formData.transactionId 
+        }]);
+        
+        if (error) throw error;
+      } catch (err) {
+        console.error("Error saving registration to Supabase:", err);
+        // We still proceed to WhatsApp even if Supabase fails, to ensure user can register
+      }
+
       const message = `Hello! I have registered for CODEMANIA event at NNRG Tech Fest 2027.
 
 Registration Details:
@@ -242,7 +291,7 @@ Thank you! 🙏
               </a>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
               {[
                 { icon: Calendar, label: "Date", val: "April 15, 2027" },
                 { icon: Clock, label: "Time", val: "10:00 AM IST" },
@@ -256,6 +305,19 @@ Thank you! 🙏
                 </div>
               ))}
             </div>
+
+            {/* Registration Counter */}
+            {regCount !== null && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="inline-block"
+              >
+                <p className="text-[#14b8a6] font-[900] text-[13px] tracking-[2px] uppercase">
+                  🎯 {regCount} Students Registered So Far!
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </section>
